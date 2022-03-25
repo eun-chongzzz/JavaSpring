@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="org.springframework.context.support.GenericXmlApplicationContext"/>
+    <fullyQualifiedTypeName name="com.ict.controller.di.classfile.Singer"/>
+    <fullyQualifiedTypeName name="com.ict.controller.di.classfile.Stage"/>
+    <fullyQualifiedTypeName name="com.ict.controller.di.classfile.Broadcast"/>
+    <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
+    <fullyQualifiedTypeName name="org.springframework.stereotype.Component"/>
+    <fullyQualifiedTypeName name="com.ict.controller.di.classfile.BalladSinger"/>
+    <fullyQualifiedTypeName name="com.ict.controller.di.classfile.PopSinger"/>
+    <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Qualifier"/>
+    <fullyQualifiedTypeName name="javax.inject.Inject"/>
+</qualifiedTypeNameHistroy>

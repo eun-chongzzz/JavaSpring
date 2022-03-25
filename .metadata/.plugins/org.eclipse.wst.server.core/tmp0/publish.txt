@@ -1,4 +1,4 @@
 #Tomcat publish data
-#Thu Mar 24 11:40:08 KST 2022
+#Fri Mar 25 14:13:31 KST 2022
 org.eclipse.jst.jee.server\:/binary\:C\:\\Users\\user\\.m2\\repository\\org\\springframework\\spring-web\\5.0.7.RELEASE\\spring-web-5.0.7.RELEASE.jar=C\:\\apache-tomcat-9.0.58\\wtpwebapps\\SpringBasic\\WEB-INF\\lib\\spring-web-5.0.7.RELEASE.jar
 org.eclipse.jst.jee.server\:SpringBasic=C\:\\apache-tomcat-9.0.58\\wtpwebapps\\SpringBasic

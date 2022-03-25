@@ -1,0 +1,20 @@
+package com.ict.controller.di.classfile;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Broadcast {
+	
+	
+	private Stage stage;
+	
+	public Broadcast(Stage stage) {
+		
+		this.stage = stage;
+	}
+	
+	public void onAir(){
+		System.out.println("방송 송출중인 무대에서 가수가 노래를 합니다.");
+		this.stage.perform();
+	}
+}
