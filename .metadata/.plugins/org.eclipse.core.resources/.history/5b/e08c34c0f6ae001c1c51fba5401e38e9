@@ -1,0 +1,5 @@
+package com.ict.controller.di.classfile;
+
+public class Book {
+
+}
