@@ -1,0 +1,14 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	data1에 든 값 : ${data1 }
+	data2에 든 값 : ${data2 }
+	data2에 100을 더하면 data2의 값은: ${data2 + 100 }
+</body>
+</html>

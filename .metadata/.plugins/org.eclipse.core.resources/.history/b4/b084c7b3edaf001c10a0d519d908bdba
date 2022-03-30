@@ -1,0 +1,19 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2>성적표</h2>
+	수학 : ${math }<br>
+	영어 : ${eng }<br>
+	언어 : ${lan }<br>
+	사탐 : ${soc }<br>
+	컴퓨터 : ${com }<br>
+	총점 : ${result }<br> 
+	평균 : ${result / 5 }<br> 
+</body>
+</html>
