@@ -14,11 +14,11 @@
 	<h3>각 과목의 성적을 입력해주세요</h3>
 	
 	<form action="/score" method="post">
-		<input type="number" name="math" placeholder="수학"><br>
-		<input type="number" name="eng" placeholder="영어"><br>
-		<input type="number" name="lan" placeholder="언어"><br>
-		<input type="number" name="soc" placeholder="사회탐구"><br>
-		<input type="number" name="com" placeholder="컴퓨터"><br>
+		<input type="number" name="math" max="100" min="0" placeholder="수학"><br>
+		<input type="number" name="eng" max="100" min="0" placeholder="영어"><br>
+		<input type="number" name="lan" max="100" min="0" placeholder="언어"><br>
+		<input type="number" name="soc" max="100" min="0" placeholder="사회탐구"><br>
+		<input type="number" name="computer" max="100" min="0" placeholder="컴퓨터"><br>
 		<input type="submit">
 	</form>
 </body>
