@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http:/mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 위의 스키마 작성후, 어떤 인터페이스의 메서드를 쿼리문과
+연결해 줄기 아래와 같이 인터페이스 파일부터 mapper태그로 연결합니다. -->
+
+<mapper namespace="com.ict.mapper.BoardMapper">
+
+	<!-- id속성에 BoardMapper에 적어둔 메서드 명을
+	resultType에 리턴자료형인 BoardVO를 패키지부터 -->
+	<select id="getList" resultType="com.ict.vo.BoardVO">
+		<!-- 태그 여닫는 문자인 < >가 쿼리문 중간에 오는경우
+		CDATA로 감싸서 해당 로직이 태그를 여닫기 위한 목적이 없음을 명시한다.  -->
+		<![CDATA[
+			SELECT * FROM board_tbl WHERE bno < 4
+		]]>
+	</select>
+</mapper>

@@ -23,11 +23,11 @@ public class OjdbConnectionTest {
 	@Test
 	public void testConnection () {
 		try(Connection con = DriverManager.getConnection(
-				"jdbc:oracle:thin:@localhost:1521/XEPDB1",
+				"jdbc:oracle:thin:@localhost:1521:XE",
 				"mytest",
 				"mytest"
 				)){
-			System.out.println(con);
+			log.info(con);
 		}catch(Exception e) {
 			fail(e.getMessage());
 		}

@@ -35,8 +35,8 @@ public class OracleConnectionPoolTest{
 	//@Test
 	public void testConnection() {
 		try(Connection con = dataSource.getConnection()){
-			System.out.println(con);
-			System.out.println("hikariCP connection");
+			log.info(con);
+			log.info("hikariCP connection");
 			System.out.println("히카리 연결 끝!");
 		} catch(Exception e) {
 			fail(e.getMessage());
@@ -48,8 +48,8 @@ public class OracleConnectionPoolTest{
 		try(SqlSession session = sqlSessionFactory.openSession();
 			Connection con = session.getConnection();){
 			System.out.println("마이바티스 연결 시작!");
-			System.out.println(session);
-			System.out.println(con);
+			log.info(session);
+			log.info(con);
 		} catch(Exception e) {
 			fail(e.getMessage());
 		}
