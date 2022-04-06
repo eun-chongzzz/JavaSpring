@@ -23,7 +23,7 @@ public class OjdbConnectionTest {
 	@Test
 	public void testConnection () {
 		try(Connection con = DriverManager.getConnection(
-				"jdbc:oracle:thin:@localhost:1521:XE",
+				"jdbc:oracle:thin:@localhost:1521/XEPDB1",
 				"mytest",
 				"mytest"
 				)){

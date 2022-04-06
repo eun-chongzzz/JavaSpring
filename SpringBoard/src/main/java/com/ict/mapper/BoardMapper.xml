@@ -8,11 +8,35 @@
 
 	<!-- id속성에 BoardMapper에 적어둔 메서드 명을
 	resultType에 리턴자료형인 BoardVO를 패키지부터 -->
-	<select id="getList" resultType="com.ict.vo.BoardVO">
+	<select id="getList" resultType="com.ict.domain.BoardVO">
 		<!-- 태그 여닫는 문자인 < >가 쿼리문 중간에 오는경우
 		CDATA로 감싸서 해당 로직이 태그를 여닫기 위한 목적이 없음을 명시한다.  -->
 		<![CDATA[
-			SELECT * FROM board_tbl WHERE bno < 4
+			SELECT * FROM board_tbl ORDER BY bno DESC
 		]]>
 	</select>
+	
+	<!-- insert 구문이므로 insert태그를 써야 하고 리턴자료가 없으니 자연히 resultType도 작성안합니다.
+	BoardVO를 입력받지만 #{} 내부에는 vo.변수명이 아닌 그냥 변수명을 그대로 써주시면 됩니다. -->
+	<insert id="insert">
+		INSERT INTO board_tbl (bno, title, content, writer)
+			VALUES
+		(board_num.nextval, #{title}, #{content}, #{writer})
+	</insert>
+	
+	
+	<!-- 특정 글 번호를 입력받아 콘솔에 찍어주는 메서드 select를 작성 -->
+	<select id="select" resultType="com.ict.domain.BoardVO">
+		SELECT * FROM board_tbl WHERE bno = #{bno}
+	</select>
+	
+	
+	<delete id="delete">
+		DELETE FROM board_tbl WHERE bno = #{bno}
+	</delete>
+	
+	<update id="update">
+		UPDATE board_tbl SET title = #{title}, content = #{content} WHERE bno = #{bno}
+	</update>
+	
 </mapper>
