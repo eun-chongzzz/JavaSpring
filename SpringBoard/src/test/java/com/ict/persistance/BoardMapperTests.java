@@ -25,7 +25,7 @@ public class BoardMapperTests {
 		log.info(boardMapper.getList());
 	}
 	
-	@Test
+	//@Test
 	public void testInsert() {
 		// 글 입력을 위해서 BoardVO 타입을 매개로 사용함
 		// 따라서 BoardVO를 만들어놓고
@@ -35,12 +35,14 @@ public class BoardMapperTests {
 		// 호출해주신 다음 실제로 DB에 글이 들어갔는지 확인
 		BoardVO vo = new BoardVO();
 		
+		//log.info("채워넣기 전 :" + vo);
+		
 		// 입력할 글에 대한 제목, 글쓴이, 본문을 vo에 넣어줍니다.
 		vo.setTitle("새로넣는글");
 		vo.setContent("새로넣는본문");
 		vo.setWriter("새로넣는글쓴이");
 		
-		//log.info(vo);
+		//log.info("채워넣은 후 :" + vo);
 		boardMapper.insert(vo);
 	}
 	
@@ -52,20 +54,33 @@ public class BoardMapperTests {
 		log.info(vo);
 	}
 	
+	// delete 메서드에 대한 테스트 코드 작성 후 
+	// 삭제여부를 sqldeveloper나 상단의 testGetList()로 확인해보세요.
 	//@Test
 	public void testDelete() {
-		boardMapper.delete(26);
+		boardMapper.delete(27);
+	}
+	
+	// update 메서드에 대한 테스트 코드를 작성해주신 다음
+	// 수정여부를 testGetList()로 확인해보세요.
+	//@Test
+	public void testUpdate() {
+		BoardVO board = new BoardVO();
+		log.info("전달 데이터 아직 입력 안된 vo : " + board);
+		
+		board.setTitle("제목수정(수정)");
+		board.setContent("본문수정(수정)");
+		board.setBno(21);
+		
+		log.info("전달 데이터가 입력된 vo : " + board);
+		
+		boardMapper.update(board);
+
 	}
 	
 	//@Test
-	public void testUpdate() {
-		BoardVO vo1 = new BoardVO();
-		
-		vo1.setTitle("제목수정");
-		vo1.setContent("본문수정");
-		vo1.setBno(26);
-		
-		boardMapper.update(vo1);
+		public void testUpdate2() {
+			boardMapper.update2("up2로 바꾼 제목","up2로 바꾼본문",2);
 	}
-	
+
 }
