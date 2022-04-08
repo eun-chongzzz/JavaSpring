@@ -9,25 +9,27 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<h1>연결</h1>
- 	<table class="table table-hover">
-		<tr>
-			<th>글 번호</th>
-			<th>글 제목</th>
-			<th>글쓴이</th>
-			<th>쓴날짜</th>
-			<th>최종수정날짜</th>
-		</tr>
-		<c:forEach var="board" items="${boardList }">
+	<div class="container">
+		<h1>게시글</h1>
+	 	<table class="table table-bordered border-info">
 			<tr>
-				<td>${board.bno}</td>
-				<td><a href ="/boardDetail/${board.bno }">${board.title}</a></td>
-				<td>${board.writer}</td>
-				<td>${board.regdate}</td>
-				<td>${board.updatedate}</td>
+				<th>글 번호</th>
+				<th>글 제목</th>
+				<th>글쓴이</th>
+				<th>쓴날짜</th>
+				<th>최종수정날짜</th>
 			</tr>
-		</c:forEach>
-	</table>
- 
+			<c:forEach var="board" items="${boardList }">
+				<tr>
+					<td>${board.bno}</td>
+					<td><a href ="/boardDetail/${board.bno }">${board.title}</a></td>
+					<td>${board.writer}</td>
+					<td>${board.regdate}</td>
+					<td>${board.updatedate}</td>
+				</tr>
+			</c:forEach>
+		</table>
+		<a href="/boardInsert" class="btn btn-info">글쓰기</a>
+	</div>
 </body>
 </html>
