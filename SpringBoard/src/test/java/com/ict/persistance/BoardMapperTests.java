@@ -22,7 +22,7 @@ public class BoardMapperTests {
 	
 	//@Test
 	public void testGetList() {
-		log.info(boardMapper.getList());
+		log.info(boardMapper.getList(2));
 	}
 	
 	//@Test
@@ -63,7 +63,7 @@ public class BoardMapperTests {
 	
 	// update 메서드에 대한 테스트 코드를 작성해주신 다음
 	// 수정여부를 testGetList()로 확인해보세요.
-	@Test
+	//@Test
 	public void testUpdate() {
 		BoardVO board = new BoardVO();
 		log.info("전달 데이터 아직 입력 안된 vo : " + board);
