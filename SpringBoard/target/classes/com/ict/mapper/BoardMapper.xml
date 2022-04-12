@@ -14,8 +14,18 @@
 		<![CDATA[
 			SELECT * FROM
 				(SELECT /*+ INDEX_DESC(board_tbl pk_board) */
-				ROWNUM rn, board_tbl.* FROM board_tbl WHERE ROWNUM <= (#{pageNum}*10))
-					WHERE rn > ((#{pageNum}-1)*10)
+				ROWNUM rn, board_tbl.* FROM board_tbl WHERE ROWNUM <= #{pageEnd})
+					WHERE rn > #{pageStart}
+		]]>
+		<!-- getter는 #{} 내부에 호출가능함
+		get을 뺀 나머지 메서드명을 적어주면 됨.
+		맨 앞글자는 소문자 -->
+	</select>
+	
+	<!-- board_tbl의 전체 글 갯수 -->
+	<select id="countPageNum" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*) FROM board_tbl
 		]]>
 	</select>
 	

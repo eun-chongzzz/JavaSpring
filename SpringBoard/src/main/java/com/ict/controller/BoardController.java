@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ict.domain.BoardVO;
+import com.ict.domain.Criteria;
+import com.ict.domain.PageMaker;
 import com.ict.mapper.BoardMapper;
 
 
@@ -33,9 +35,22 @@ public class BoardController {
 	// /boardList 주소를 get방식으로 선언해주세요.
 	// 메서드 내부에는 boardMapper.getList를 호출해 그 결과를 바인딩합니다.
 	@GetMapping(value="/boardList")
-	public String getAllList(@RequestParam(defaultValue="1") long pageNum, Model model) {
-		List<BoardVO> boardList = boardMapper.getList(pageNum);
+	// @RequesetParam(name="사용할변수명", defaultValue="지정하고싶은값") 변수 왼쪽에 저렇게 붙여주면 처리완료.
+	// @PathVariable의 경우 defaultValue를 직접 줄 수 없으나, required=false를 이용해 필수입력을 안받게
+	// 처리한 후 컨트롤러 내부에서 디폴트값을 입력해줄수 있다.
+	// 기본형 자료는 null을 저장할 수 없기 때문에 wrapper class를 이용해 Long을 선언합니다.
+	public String getAllList(Criteria cri, Model model) {
+		
+		List<BoardVO> boardList = boardMapper.getList(cri);
 		model.addAttribute("boardList",boardList);
+		
+		// 버튼 처리를 위해 추가로 페이지메엌 생성 및 세팅
+		PageMaker pageMaker = new PageMaker();
+		pageMaker.setCri(cri); // cri 입력
+		int countPage = boardMapper.countPageNum();// DB내 글 개수를 받아옴
+		pageMaker.setTotalBoard(countPage); // calcData()호출도 되면서 순식간에 prev, next, stratPage, endPage세팅
+		model.addAttribute("pageMaker", pageMaker);
+		
 		return "boardList";
 	}
 	
