@@ -29,4 +29,9 @@
 	
 	<mybatis-spring:scan base-package="com.ict.mapper"/>
 	<mybatis-spring:scan base-package="com.ict.time.mapper"/>
+	
+	<!-- com.ict.service에 대해 컴포넌트 스캔을 해 주세요 -->
+	<context:component-scan base-package="com.ict.service" />
+	
+	
 </beans>

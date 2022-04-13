@@ -11,25 +11,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ict.domain.BoardVO;
-import com.ict.domain.Criteria;
 import com.ict.domain.PageMaker;
-import com.ict.mapper.BoardMapper;
+import com.ict.domain.SearchCriteria;
+import com.ict.service.BoardService;
 
-
-import lombok.extern.log4j.Log4j;
 
 // 컨트롤러가 컨트롤러 기능을 할 수 있도록 처리해주세요.
 @Controller
-@Log4j
 public class BoardController {
 	
+	// 컨트롤러는 Service만 호출하도록 구조를 바꿉니다.
+	// Service를 BoardControoler 내부에서 쓸수있도록 선언/주입해주세요.
 	@Autowired
-	private BoardMapper boardMapper;
+	private BoardService service; //(실제 주입되는 요소는 ServiceImpl이므로 호출 지점도 Ser)
 	
-	// 전체 회원을 보려면, 회원 목록을 들고오는 메서드를 실행해야 하고
-	// 그러면, 그 메서드를 보유하고 있는 클래스를 선언하고 주입해줘야 합니다.
-	// DB 접근시 사용하는 BoardMapper를 선언하고 주입해주세요.
-	// 참고) BoardMapperTests.java
 	
 	// 전체 글 목록을 볼 수 있는 페이지이 boardList.jsp로 연결되는
 	// /boardList 주소를 get방식으로 선언해주세요.
@@ -39,15 +34,15 @@ public class BoardController {
 	// @PathVariable의 경우 defaultValue를 직접 줄 수 없으나, required=false를 이용해 필수입력을 안받게
 	// 처리한 후 컨트롤러 내부에서 디폴트값을 입력해줄수 있다.
 	// 기본형 자료는 null을 저장할 수 없기 때문에 wrapper class를 이용해 Long을 선언합니다.
-	public String getAllList(Criteria cri, Model model) {
+	public String getAllList(SearchCriteria cri, Model model) {
 		
-		List<BoardVO> boardList = boardMapper.getList(cri);
+		List<BoardVO> boardList = service.getList(cri);
 		model.addAttribute("boardList",boardList);
 		
-		// 버튼 처리를 위해 추가로 페이지메엌 생성 및 세팅
+		// 버튼 처리를 위해 추가로 페이지메이커 생성 및 세팅
 		PageMaker pageMaker = new PageMaker();
 		pageMaker.setCri(cri); // cri 입력
-		int countPage = boardMapper.countPageNum();// DB내 글 개수를 받아옴
+		int countPage = service.countPageNum();// DB내 글 개수를 받아옴
 		pageMaker.setTotalBoard(countPage); // calcData()호출도 되면서 순식간에 prev, next, stratPage, endPage세팅
 		model.addAttribute("pageMaker", pageMaker);
 		
@@ -59,7 +54,7 @@ public class BoardController {
 	// 주소 뒤에 ?bno=번호 형식으로 적힌 번호글만 조회합니다.
 	@GetMapping(value="/boardDetail/{bno}")
 	public String getDetail(@PathVariable long bno, Model model) {
-		BoardVO board = boardMapper.select(bno);
+		BoardVO board = service.select(bno);
 		model.addAttribute("board", board);
 		return "boardDetail";
 	}
@@ -79,7 +74,7 @@ public class BoardController {
 	// boardList로 돌려보내주세요.
 	@PostMapping(value="/boardInsert")
 	public String boardInsert(BoardVO boardVO) {
-		boardMapper.insert(boardVO);
+		service.insert(boardVO);
 		return "redirect:/boardList";
 	}
 	
@@ -90,7 +85,7 @@ public class BoardController {
 	// submit 버튼을 생성해서 처리하게 해주세요.
 	@PostMapping(value="/boardDelete")
 	public String boardDelete(long bno) {
-		boardMapper.delete(bno);
+		service.delete(bno);
 		return "redirect:/boardList";
 	}
 	
@@ -100,7 +95,7 @@ public class BoardController {
 	// 폼 페이지에 포워딩해서 기입해놔야합니다.
 	@PostMapping(value="/boardUpdateForm")
 	public String updateForm(long bno, Model model) {
-		BoardVO board = boardMapper.select(bno);
+		BoardVO board = service.select(bno);
 		model.addAttribute("board", board);
 		return "boardUpdateForm";
 	}
@@ -111,7 +106,7 @@ public class BoardController {
 	// 수정 후에는 수정요청이 들어온 글번호의 디테일페이지로 리다이렉트로 시켜주세요.
 	@PostMapping(value="/boardUpdate")
 	public String boardUpdate(BoardVO vo, @RequestParam("bno") long bno, Model model) {
-		boardMapper.update(vo);
+		service.update(vo);
 		model.addAttribute("bno",bno);
 		return "redirect:/boardDetail/{bno}";
 	}
