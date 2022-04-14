@@ -5,7 +5,43 @@
 연결해 줄기 아래와 같이 인터페이스 파일부터 mapper태그로 연결합니다. -->
 
 <mapper namespace="com.ict.mapper.BoardMapper">
-
+			
+			<!-- 조건에 따른 쿼리문이 가변적으로 추가될 부분 
+			이 쿼리문을 돌리면서 SearchCriteria를 돌리고 있으므로
+			SearchCriteria.searchType을 아래처럼 변수명만 적어 감지가 됨
+			
+			상단의 sql태그를 이용해 명칭을 부여했으므로, 명칭만 맞추면 긴 내용을 다 넣지 않아도 됨-->
+			<sql id="search">
+				<if test="searchType != null">
+					<if test="searchType == 't'.toString()">
+						(Title like '%'||#{keyword}||'%') AND
+					</if>
+					<if test="searchType == 'c'.toString()">
+						(Content like '%'||#{keyword}||'%') AND
+					</if>
+					<if test="searchType == 'w'.toString()">
+						(Writer like '%'||#{keyword}||'%') AND
+					</if>
+					<if test="searchType == 'tc'.toString()">
+						((Title like '%'||#{keyword}||'%')
+							or
+						(Content like '%'||#{keyword}||'%')) AND
+					</if>
+					<if test="searchType == 'cw'.toString()">
+						((Content like '%'||#{keyword}||'%')
+							or
+						(Writer like '%'||#{keyword}||'%')) AND
+					</if>
+					<if test="searchType == 'tcw'.toString()">
+						((Title like '%'||#{keyword}||'%')
+							or
+						(Content like '%'||#{keyword}||'%')
+							or
+						(Writer like '%'||#{keyword}||'%')) AND
+					</if>
+				</if>	
+			</sql>
+			
 	<!-- id속성에 BoardMapper에 적어둔 메서드 명을
 	resultType에 리턴자료형인 BoardVO를 패키지부터 -->
 	<select id="getList" resultType="com.ict.domain.BoardVO">
@@ -14,7 +50,15 @@
 		<![CDATA[
 			SELECT * FROM
 				(SELECT /*+ INDEX_DESC(board_tbl pk_board) */
-				ROWNUM rn, board_tbl.* FROM board_tbl WHERE ROWNUM <= #{pageEnd})
+				ROWNUM rn, board_tbl.* FROM board_tbl WHERE 
+			]]>	
+				
+			<!-- 글 개수 조회구문에도 include태그로 입력 -->	
+			<include refid="search"></include>
+			
+			<!-- 글 번호를 조절하기 위한 부분 -->	
+		<![CDATA[		
+				ROWNUM <= #{pageEnd})
 					WHERE rn > #{pageStart}
 		]]>
 		<!-- getter는 #{} 내부에 호출가능함
@@ -25,9 +69,17 @@
 	<!-- board_tbl의 전체 글 갯수 -->
 	<select id="countPageNum" resultType="int">
 		<![CDATA[
-			SELECT COUNT(*) FROM board_tbl
+			SELECT COUNT(*) FROM board_tbl WHERE
+		]]>
+		
+			<include refid="search"></include>
+			
+		<![CDATA[
+			bno > 0
 		]]>
 	</select>
+	
+	
 	
 	<!-- insert 구문이므로 insert태그를 써야 하고 리턴자료가 없으니 자연히 resultType도 작성안합니다.
 	BoardVO를 입력받지만 #{} 내부에는 vo.변수명이 아닌 그냥 변수명을 그대로 써주시면 됩니다. -->
