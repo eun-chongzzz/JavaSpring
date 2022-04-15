@@ -8,16 +8,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ict.domain.BoardVO;
 import com.ict.domain.PageMaker;
 import com.ict.domain.SearchCriteria;
 import com.ict.service.BoardService;
 
+import lombok.extern.log4j.Log4j;
+
 
 // 컨트롤러가 컨트롤러 기능을 할 수 있도록 처리해주세요.
 @Controller
+@Log4j
 public class BoardController {
 	
 	// 컨트롤러는 Service만 호출하도록 구조를 바꿉니다.
@@ -84,8 +87,13 @@ public class BoardController {
 	// 글 삭제 버튼은 detail페이지 해단에 form으로 만들어서 bno를 hidden으로 전달하는
 	// submit 버튼을 생성해서 처리하게 해주세요.
 	@PostMapping(value="/boardDelete")
-	public String boardDelete(long bno) {
+	public String boardDelete(long bno, SearchCriteria cri, RedirectAttributes rttr) {
+		
 		service.delete(bno);
+		
+		rttr.addAttribute("pageNum",cri.getPageNum());
+		rttr.addAttribute("searchType",cri.getSearchType());
+		rttr.addAttribute("keyword",cri.getKeyword());
 		return "redirect:/boardList";
 	}
 	
@@ -104,20 +112,36 @@ public class BoardController {
 	// update(BoardVO) 를 실행해서, 폼에서 날려준 데이터를 토대로
 	// 해당글의 내용이 수정되도록 만들어주시면 됩니다.
 	// 수정 후에는 수정요청이 들어온 글번호의 디테일페이지로 리다이렉트로 시켜주세요.
+	@PostMapping("/boardUpdate")
+											// keyword, searchType, pageNum 을 받기 위해 선언
+	public String boardUpdate(BoardVO board, SearchCriteria cri, RedirectAttributes rttr){
+		
+		log.info("수정로직입니다." + board);
+		log.info("검색어 : " + cri.getKeyword());
+		log.info("검색조건 : " + cri.getSearchType());
+		log.info("페이지번호 : " + cri.getPageNum());
+		service.update(board);
+		
+		// 리다이렉트 주소창 뒤에 파라미터 쿼리스트링 형식으로 붙이기
+		// rttr.addAttribute("파라미터명", "전달자료");
+		// 는 호출되면 redirect 주소 뒤에 파라미터를 붙여줍니다.
+		// rttr.addFlashAttribuute()는 넘어간 페이지에서 파라미터를
+		// 쓸 수 있도록 전달하는것으로 둘의 역할이 다르니 주의하세요.
+		rttr.addAttribute("pageNum",cri.getPageNum());
+		rttr.addAttribute("searchType",cri.getSearchType());
+		rttr.addAttribute("keyword",cri.getKeyword());
+		
+		return "redirect:/boardDetail/" + board.getBno();
+		
+	 }
+	
+	/*
 	@PostMapping(value="/boardUpdate")
 	public String boardUpdate(BoardVO vo, @RequestParam("bno") long bno, Model model) {
 		service.update(vo);
 		model.addAttribute("bno",bno);
 		return "redirect:/boardDetail/{bno}";
-	}
-	
-	/*
-	@PostMapping("/boardUpdate")
-	public String boardUpdate(BoardVO board){
-		boardMapper.update(board);
-		return "redirect:/boardDetail?bno=" + board.getBno();
-	 }
-	 */
-	
+	} */
+		
 	
  }
