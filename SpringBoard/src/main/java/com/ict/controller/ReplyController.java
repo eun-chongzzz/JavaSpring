@@ -1,9 +1,13 @@
 package com.ict.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +17,7 @@ import com.ict.domain.ReplyVO;
 import com.ict.service.ReplyService;
 
 @RestController
-@RequestMapping("/replies")
+@RequestMapping("/replies")// 접속주소에 replies가 기본적으로 붙음
 public class ReplyController {
 	
 	@Autowired
@@ -46,4 +50,25 @@ public class ReplyController {
 		// 위의 try블럭이나 catch블럭에서 얻어온 entity변수 리턴
 		return entity;
 	}
+	
+	@GetMapping(value="/all/{bno}", 
+				produces= {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+		// 단일 숫자데이터 bno만 넣기도하고
+		// PathVariable 어노테이션으로 이미 입력데이터가
+		// 명시되었으므로 consumes는 따로 주지 않아도 됩니다.
+		// produces는 댓글 목록이 XML로도, JSON으로도 표현될수있도록
+		// 아래와 같이 2개를 모두 얹습니다.
+		// jsckson-dataformat-xml을 추가해야 xml도 작동합니다.
+	public ResponseEntity<List<ReplyVO>> list(@PathVariable("bno") Long bno){
+		
+			ResponseEntity<List<ReplyVO>> entity = null;
+		try {
+			entity = new ResponseEntity<>(service.listReply(bno), HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+	
 }
