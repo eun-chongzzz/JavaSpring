@@ -8,7 +8,7 @@
 </head>
 <body>
 	<h1>${board.bno}번 글을 수정합니다.</h1>
-	<form action="/boardUpdate" method="POST">
+	<form action="/board/boardUpdate" method="POST">
 		
 		<input type="hidden" name="bno" value="${board.bno }">
 		<input type="text" name="title" value="${board.title }">

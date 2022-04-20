@@ -22,6 +22,7 @@ import lombok.extern.log4j.Log4j;
 // 컨트롤러가 컨트롤러 기능을 할 수 있도록 처리해주세요.
 @Controller
 @Log4j
+@RequestMapping("/board")
 public class BoardController {
 	
 	// 컨트롤러는 Service만 호출하도록 구조를 바꿉니다.
@@ -50,7 +51,7 @@ public class BoardController {
 		pageMaker.setTotalBoard(countPage); // calcData()호출도 되면서 순식간에 prev, next, stratPage, endPage세팅
 		model.addAttribute("pageMaker", pageMaker);
 		
-		return "boardList";
+		return "board/boardList";
 	}
 	
 	// 글 하나만 조회할 수 있는 디테일 페이지인 boardDetail.jsp로 연결되는
@@ -60,7 +61,7 @@ public class BoardController {
 	public String getDetail(@PathVariable long bno, Model model) {
 		BoardVO board = service.select(bno);
 		model.addAttribute("board", board);
-		return "boardDetail";
+		return "board/boardDetail";
 	}
 	
 	// insert 페이지를 위한 폼으로 연결되는 컨트롤러를 먼저 만들겠습니다.
@@ -68,7 +69,7 @@ public class BoardController {
 	// 폼 페이지의 이름은 boardForm.jsp 입니다.
 	@GetMapping(value="/boardInsert")
 	public String boardForm() {
-		return "boardForm";
+		return "board/boardForm";
 	}
 	
 	// /boardInsert인데 post방식을 처리하는 메서드를 새로 만들어주세요.
@@ -79,7 +80,7 @@ public class BoardController {
 	@PostMapping(value="/boardInsert")
 	public String boardInsert(BoardVO boardVO) {
 		service.insert(boardVO);
-		return "redirect:/boardList";
+		return "redirect:/board/boardList";
 	}
 	
 	// 글삭제 로직은 Post방식으로 진행합니다
@@ -95,7 +96,7 @@ public class BoardController {
 		rttr.addAttribute("pageNum",cri.getPageNum());
 		rttr.addAttribute("searchType",cri.getSearchType());
 		rttr.addAttribute("keyword",cri.getKeyword());
-		return "redirect:/boardList";
+		return "redirect:/board/boardList";
 	}
 	
 	// /boardUpdateForm 를 Post방식으로 접속하는 form 연결 메서드를 만들겠습니다.
@@ -106,7 +107,7 @@ public class BoardController {
 	public String updateForm(long bno, Model model) {
 		BoardVO board = service.select(bno);
 		model.addAttribute("board", board);
-		return "boardUpdateForm";
+		return "board/boardUpdateForm";
 	}
 	
 	// boardUpdate를 post방식으로 접속하는 메서드를 만들겠습니다.
@@ -132,7 +133,7 @@ public class BoardController {
 		rttr.addAttribute("searchType",cri.getSearchType());
 		rttr.addAttribute("keyword",cri.getKeyword());
 		
-		return "redirect:/boardDetail/" + board.getBno();
+		return "redirect:/board/boardDetail/" + board.getBno();
 		
 	 }
 	
