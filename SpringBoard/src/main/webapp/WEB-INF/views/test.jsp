@@ -48,8 +48,8 @@
 				// 를 이용해 data를 하나하나 향상된 for문형식들로 처리할때 실행구문을 적을 수 있습니다.
 				$(data).each(function(){
 						// 하나하나 반복되는 각 테이터는 this라는 키워드로 표현됩니다.
-						console.log("==============");
-						console.log(this);
+						//console.log("==============");
+						//console.log(this);
 						str += "<li data-rno='" + this.rno + "' class='replyLi'>"
 						+ this.rno + ":" + this.reply + "</li>";
 					});
