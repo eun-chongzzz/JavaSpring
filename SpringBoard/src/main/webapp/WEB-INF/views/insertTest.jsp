@@ -12,10 +12,10 @@
 		 	position : absolute;
 		 	top : 50%;
 		 	left : 50%;
-		 	margin-top : -50px;
-		 	margin-left : -150px;
+		 	margin-top : -50px;	/*height의 절반(음수) 중앙위치*/
+		 	margin-left : -150px; /*width의 절반(음수) 중앙위치*/
 		 	padding : 10px;
-		 	z-index : 1000;
+		 	z-index : 1000; /*무조건 1보다 클것*/
 		}
 	</style>
 <meta charset="UTF-8">
@@ -40,7 +40,7 @@
 		</div>
 		<button id="replyAddBtn">댓글 작성</button>
 	</div>
-	
+	<!-- 댓글추가공간 -->
 	<ul id="replies">
 		<!-- 비어있는 ul -->
 	</ul>
@@ -49,7 +49,6 @@
 	단, 새 창을 띄우지는 않고 css를 이용해 특정 태그가 조건부로 보이거나 안 보이도록 처리해서
 	마치 창이 새로 띄워지는것처럼 만듭니다.
 	따라서 눈에 보이지는 않아도 modal을 구성하는 태그 자체는 화면에 미리 적혀있어야 합니다.-->
-	
 	<div id="modDiv" style="display:none;">
 		<div class="modal-title"></div>
 		<div>
@@ -75,7 +74,7 @@
 			$.getJSON("/replies/all/" + bno, function(data){
 		
 				var str= "";
-				
+											
 				$(data).each(function(){
 					
 					str += "<li data-rno='" + this.rno + "' class='replyLi'>"
@@ -122,7 +121,7 @@
 	
 		// 이벤트 위임
 		$("#replies").on("click", ".replyLi button", function(){
-			// 클릭한 요소가 this이고, 현재 button에 걸렸기 덈누에
+			// 클릭한 요소가 this이고, 현재 button에 걸렸기 때문에
 			// this는 button 입니다. button의 부모가 바로 .replyLi 입니다.
 			// 즉, 클릭한 버튼과 연계된 li태그를 replytag 변수에 저장합니다.
 			var replytag = $(this).parent();
