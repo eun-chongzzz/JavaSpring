@@ -72,19 +72,20 @@
 		</div>
 	
 	
-		<div class="row">
-			<h2 class="text-primary">댓글</h2>
-			<!-- 댓글작성공간 -->
-			<div>
-				<div>
-					댓글 글쓴이 <input type="text" name="replyer" id="newReplyWriter">
-				</div>
-				<div>
-					댓글 내애용 <input type="text" name="reply" id="newReplyText">
-				</div>
-				<button id="replyAddBtn">댓글 작성</button>
-			</div>
-		
+		<div class="row box-box-success">
+			<div class="box-header">
+				<h2 class="text-primary">댓글작성</h2>
+			</div><!-- header -->
+			<div class="box-body">
+				<strong>Writer : </strong>
+				<input type="text" id="newReplyWriter" placeholder="글쓴이" class="from-control">
+				<strong>ReplyText : </strong>
+				<input type="text" id="newReplyText" placeholder="댓글내용" class="from-control">
+			</div><!-- body -->
+			<div class="box-footer">
+				<button type="button" class= "btn btn-success" id="replyAddBtn">댓글 추가</button>
+			</div><!-- footer -->
+		</div><!-- row -->
 		
 			<!-- 댓글추가공간 -->
 			<ul id="replies">
@@ -187,13 +188,17 @@
 			
 			// 형제 태그 .reply의 내용을 대신 가져올수있도록
 			// 변수 replyContent에 선언해 거기에 저장해주세요. 
-			// (hint : .sibling("요소명"); 으로 형제태그를 가져올수있습니다
+			// (hint : .siblings("요소명"); 으로 형제태그를 가져올수있습니다
+			//var replyContent = $(this).prev().text();// button의 직전 태그인 .reply의 내용물 가져오기
+			var replyContent = $(this).siblings(".reply").text(); // button의 형제 중 .reply의 내용물 가져오기
+			//var replyContent = $(this).parent().children(".reply").text(); 
+			
 			var rno = replytag.attr("data-rno");
 			var reply = replytag.text();
 		
-			$(".modal-title").html(rno); 
-			$("#reply").val(reply); 
-			$("#modDiv").show("slow");
+			$(".modal-title").html(rno); // modal-title 부분에 글번호 입력 
+			$("#reply").val(replyContent);  // reply 영역에 리플내용을 기입(수정삭제)
+			$("#modDiv").show("slow"); // modal 열림
 		});
 		
 		// 모달창 닫기
