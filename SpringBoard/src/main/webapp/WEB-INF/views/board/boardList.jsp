@@ -29,7 +29,7 @@
 				</tr>
 			</c:forEach>
 		</table>
-		<a href="board/boardInsert" class="btn btn-info">글쓰기</a><br>
+		<a href="/board/boardInsert" class="btn btn-info">글쓰기</a><br>
 		${pageMaker }
 		<!-- 버튼 -->
 		<ul class="pagination justify-content-center">
