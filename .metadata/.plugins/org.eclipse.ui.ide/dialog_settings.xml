@@ -13,8 +13,8 @@
 			<item value="C:\eclipse\spring_1\SpringBoard"/>
 		</list>
 		<list key="WizardProjectsImportPage.STORE_ARCHIVES">
-			<item value="C:\eclipse\spring_1\SpringBoard\src\main\webapp\WEB-INF\views\board\boardForm.jsp"/>
 			<item value=""/>
+			<item value="C:\eclipse\spring_1\SpringBoard\src\main\webapp\WEB-INF\views\board\boardForm.jsp"/>
 			<item value="C:\eclipse\spring_1\SpringBasic.zip"/>
 		</list>
 	</section>
