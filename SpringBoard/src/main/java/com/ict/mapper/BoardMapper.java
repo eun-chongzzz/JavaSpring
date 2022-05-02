@@ -36,4 +36,8 @@ public interface BoardMapper {
 						@Param("content") String content,
 						@Param("bno") long bno);
 	
+	
+	// 해당 글의 댓글 갱신(amount 증감량) 
+	public void updateReplyCount(@Param("bno") long bno,
+								@Param("amount") int amount);
 }

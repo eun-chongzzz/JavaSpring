@@ -24,4 +24,9 @@
 		DELETE FROM reply_tbl WHERE rno = #{rno}
 	</delete>
 	
+	<!-- 조회할 댓글이 몇번글에 있는지 조회 -->
+	<select id="getBno" resultType="long">
+		SELECT bno FROM reply_tbl WHERE rno = #{rno}
+	</select>
+	
 </mapper>

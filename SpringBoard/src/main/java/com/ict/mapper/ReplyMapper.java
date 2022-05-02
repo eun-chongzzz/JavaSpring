@@ -17,4 +17,6 @@ public interface ReplyMapper {
 	// 댓글 삭제시는 단일 댓글 하나만 삭제해야 하므로 댓글번호를 받는다.
 	public void delete(Long rno);
 	
+	// rno만으로 bno를 유추해야하기 때문에 getBno선언
+	public int getBno(long rno);
 }

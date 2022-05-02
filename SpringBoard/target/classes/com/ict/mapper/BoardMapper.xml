@@ -111,5 +111,11 @@
 		UPDATE board_tbl SET title = #{title}, content = #{content}, updatedate = sysdate WHERE bno = #{bno}
 	</update>
 	
+	<!-- 댓글 갱신 쿼리 -->
+	<update id="updateReplyCount">
+		UPDATE board_tbl
+			SET
+		replycount = replycount + #{amount} where bno = #{bno}
+	</update>
 	
 </mapper>

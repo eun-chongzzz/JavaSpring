@@ -15,5 +15,6 @@ public class BoardVO {
 	private String writer;
 	private Date regdate;
 	private Date updatedate;
+	private int replyCount; // 댓글 표출 시 추가한 컬럼 
 	
 }
