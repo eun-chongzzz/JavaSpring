@@ -5,7 +5,153 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2022-04-28T21:00:00Z</updated>
+  <updated>2022-05-03T00:03:00Z</updated>
+  <entry>
+    <title>Ever wanted to rewrite a query in Spring Data JPA?</title>
+    <link rel="alternate" href="https://spring.io/blog/2022/05/02/ever-wanted-to-rewrite-a-query-in-spring-data-jpa" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Greg L. Turnquist</name>
+    </author>
+    <id>tag:spring.io,2022-05-02:4783</id>
+    <updated>2022-05-03T00:03:00Z</updated>
+    <content type="html">&lt;div class="paragraph"&gt;
+&lt;p&gt;Sometimes, no matter how many features you try to apply, it seems impossible to get Spring Data JPA to apply every thing
+you&amp;#8217;d like to a query before it is sent to the &lt;code&gt;EntityManager&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;With &lt;code&gt;3.0.0-SNAPSHOT&lt;/code&gt; (and targeted for the next milestone release train of Spring Data), you now have the ability to get your hands on the query, right before it&amp;#8217;s sent to the &lt;code&gt;EntityManager&lt;/code&gt; and "rewrite" it. That is, you can make any alterations at the last moment.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Check it out below:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="exampleblock"&gt;
+&lt;div class="title"&gt;Example 1. Declare a QueryRewriter using &lt;code&gt;@Query&lt;/code&gt;&lt;/div&gt;
+&lt;div class="content"&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre class="prettyprint highlight"&gt;&lt;code data-lang="java"&gt;public interface MyRepository extends JpaRepository&amp;lt;User, Long&amp;gt; {
+
+    @Query(value = "select original_user_alias.* from SD_USER original_user_alias",
+                    nativeQuery = true, queryRewriter = MyQueryRewriter.class) // &lt;b class="conum"&gt;(1)&lt;/b&gt;
+    List&amp;lt;User&amp;gt; findByNativeQuery(String param);
+
+    @Query(value = "select original_user_alias from User original_user_alias",
+                   queryRewriter = MyQueryRewriter.class) // &lt;b class="conum"&gt;(2)&lt;/b&gt;
+    List&amp;lt;User&amp;gt; findByNonNativeQuery(String param);
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="colist arabic"&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;This pure SQL query (thanks to &lt;code&gt;nativeQuery&lt;/code&gt;) will get routed through yet-to-be-defined &lt;code&gt;MyQueryRewriter&lt;/code&gt; before the query is invoked.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;This JPQL query will also get routed through the same &lt;code&gt;MyQueryRewriter&lt;/code&gt; before it&amp;#8217;s handed over to the &lt;code&gt;EntityManager&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;You can then write your own ticket, as shown below!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="exampleblock"&gt;
+&lt;div class="title"&gt;Example 2. Example &lt;code&gt;QueryRewriter&lt;/code&gt;&lt;/div&gt;
+&lt;div class="content"&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre class="prettyprint highlight"&gt;&lt;code data-lang="java"&gt;public class MyQueryRewriter implements QueryRewriter {
+
+    @Override
+    public String rewrite(String query, Sort sort) {
+        return query.replaceAll("original_user_alias", "rewritten_user_alias");
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Okay, this one is a tad contrived. We are basically changing the name of a particular query&amp;#8217;s alias. But you can really do anything you can think of. This hook gives you a chance to change a little (or a lot!).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Just be sure to register an instance &lt;code&gt;MyQueryRewriter&lt;/code&gt; in the application context. Whether you use one of Spring Framework&amp;#8217;s &lt;code&gt;@Component&lt;/code&gt;-based annotations, or you supply it through a &lt;code&gt;@Bean&lt;/code&gt; method inside an &lt;code&gt;@Configuration&lt;/code&gt; class, the choice is yours.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="admonitionblock warning"&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class="icon"&gt;
+&lt;div class="title"&gt;Warning&lt;/div&gt;
+&lt;/td&gt;
+&lt;td class="content"&gt;
+Your &lt;code&gt;QueryRewriter&lt;/code&gt; is invoked after any and all checks have been performed by Spring Data JPA. You&amp;#8217;re responsible for supplying a valid query to the &lt;code&gt;EntityManager&lt;/code&gt;.
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;But wait&amp;#8230;&amp;#8203;there&amp;#8217;s more!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;While you can write your &lt;code&gt;QueryRewriter&lt;/code&gt; as a separate bean, it&amp;#8217;s also possible to put right inside the repository where it&amp;#8217;s used!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="exampleblock"&gt;
+&lt;div class="title"&gt;Example 3. Repository that provides the &lt;code&gt;QueryRewriter&lt;/code&gt;&lt;/div&gt;
+&lt;div class="content"&gt;
+&lt;div class="listingblock"&gt;
+&lt;div class="content"&gt;
+&lt;pre class="prettyprint highlight"&gt;&lt;code data-lang="java"&gt;public interface MyRepository extends JpaRepository&amp;lt;User, Long&amp;gt;,
+                                   QueryRewriter { // &lt;b class="conum"&gt;(1)&lt;/b&gt;
+
+    @Query(value = "select original_user_alias.* from SD_USER original_user_alias",
+                   nativeQuery = true, queryRewriter = MyRepository.class) // &lt;b class="conum"&gt;(2)&lt;/b&gt;
+    List&amp;lt;User&amp;gt; findByNativeQuery(String param);
+
+    @Query(value = "select original_user_alias from User original_user_alias",
+                   queryRewriter = MyRepository.class) // &lt;b class="conum"&gt;(3)&lt;/b&gt;
+    List&amp;lt;User&amp;gt; findByNonNativeQuery(String param);
+
+    @Override
+    default String rewrite(String query, Sort sort) { // &lt;b class="conum"&gt;(4)&lt;/b&gt;
+        return query.replaceAll("original_user_alias", "rewritten_user_alias");
+    }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="colist arabic"&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Have your repository interface extend the &lt;code&gt;QueryRewriter&lt;/code&gt; interface.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Plug in the name of your repository into the native query&amp;#8217;s &lt;code&gt;@Query.queryRewriter&lt;/code&gt; entry.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Plug in the name of your repository into the JPQL query&amp;#8217;s &lt;code&gt;@Query.queryRewriter&lt;/code&gt; entry.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Override the &lt;code&gt;rewrite(String,Sort)&lt;/code&gt; method and plugin a &lt;code&gt;default&lt;/code&gt; value, and &lt;strong&gt;POOF&lt;/strong&gt; you&amp;#8217;re done!&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Fair warning: it&amp;#8217;s possible you may need more than one rewriter based on what exactly you&amp;#8217;re doing.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Spring Data JPA supports not only Spring&amp;#8217;s application context, but CDI-based environments.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;Happy querying!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="paragraph"&gt;
+&lt;p&gt;-Greg Turnquist&lt;/p&gt;
+&lt;/div&gt;
+&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
+  </entry>
   <entry>
     <title>A Bootiful Podcast: Simon Ritter, Java Champion and deputy CTO at Azul</title>
     <link rel="alternate" href="https://spring.io/blog/2022/04/28/a-bootiful-podcast-simon-ritter-java-champion-and-deputy-cto-at-azul" />
@@ -700,19 +846,6 @@ public class GraphQlExample {&#xD;
   &lt;li&gt;&lt;a href="https://spring.io/blog/2022/04/05/spring-cloud-data-flow-2-9-4-released"&gt;Spring Cloud Data Flow 2.9.4 Released&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href="https://twitter.com/JavaAtMicrosoft/status/1512161238121209856"&gt; Spring Cloud Azure 4.0 integrations are generally available. &lt;/a&gt; Congrats to the teams at Microsoft and the community on such an epic release!&lt;/li&gt;
 &lt;/ul&gt;
-&lt;!-- rendered by Sagan Renderer Service --&gt;</content>
-  </entry>
-  <entry>
-    <title>A Bootiful Podcast: GraphQL Java founder Andi Marek</title>
-    <link rel="alternate" href="https://spring.io/blog/2022/04/07/a-bootiful-podcast-graphql-java-founder-andi-marek" />
-    <category term="engineering" label="Engineering" />
-    <author>
-      <name>Josh Long</name>
-    </author>
-    <id>tag:spring.io,2022-04-07:4763</id>
-    <updated>2022-04-07T20:00:00Z</updated>
-    <content type="html">&lt;p&gt;Hi, Spring fans! In this installment of a Bootiful Podcast, Josh Long (@starbuxman) talks to the GraphQL Java project founder and lead, Atlassian engineer, and Spring GraphQL cofounder Andi Marek (@andimarek). &lt;/p&gt;
-&lt;iframe title="GraphQL Java founder Andi Marek" allowtransparency="true" height="150" width="100%" style="border: none; min-width: min(100%, 430px);" scrolling="no" data-name="pb-iframe-player" src="https://www.podbean.com/player-v2/?i=k7php-11f2ea7-pb&amp;from=pb6admin&amp;share=1&amp;download=1&amp;rtl=0&amp;fonts=Arial&amp;skin=1&amp;font-color=&amp;logo_link=episode_page&amp;btn-skin=7"&gt;&lt;/iframe&gt;
 &lt;!-- rendered by Sagan Renderer Service --&gt;</content>
   </entry>
 </feed>

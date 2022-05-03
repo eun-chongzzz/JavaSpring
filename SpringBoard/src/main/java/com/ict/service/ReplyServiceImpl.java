@@ -25,10 +25,13 @@ public class ReplyServiceImpl implements ReplyService{
 	public List<ReplyVO> listReply(Long bno) {
 		return replyMapper.getList(bno);
 	}
-
+	
+	@Transactional // 2개 이상의 DB접근 구문이 사용되면 트랜잭션 적용
 	@Override
 	public void addReply(ReplyVO vo) {
 		replyMapper.create(vo);	
+		// 댓글번호는 ReplyVO에 들어있으므로 getter를 활용
+		boardMapper.updateReplyCount(vo.getBno(), 1);
 	}
 
 	@Override
@@ -36,12 +39,13 @@ public class ReplyServiceImpl implements ReplyService{
 		replyMapper.update(vo);
 	}
 	
-	//@Transactional
+	@Transactional
 	@Override
 	public void removeReply(Long rno) {
-		replyMapper.delete(rno); // 1. 댓글삭제
-		//Long bno = replyMapper.getBno(rno); // 2. 삭제한 댓글의 글번호 얻기
-		//boardMapper.updateReplyCount(bno, -1);// 3. 그 글번호에서 댓글갯수 줄이기
+		Long bno = replyMapper.getBno(rno); // 1. 삭제한 댓글의 글번호 얻기
+		replyMapper.delete(rno); // 2. 댓글삭제
+		// DB에서 커밋안하면 pending 상태로 계속 지연되니 주의
+		boardMapper.updateReplyCount(bno, -1);// 3. 그 글번호에서 댓글갯수 줄이기
 	}
 	
 

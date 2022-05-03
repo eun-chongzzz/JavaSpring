@@ -38,6 +38,6 @@ public interface BoardMapper {
 	
 	
 	// 해당 글의 댓글 갱신(amount 증감량) 
-	public void updateReplyCount(@Param("bno") long bno,
+	public void updateReplyCount(@Param("bno") Long bno,
 								@Param("amount") int amount);
 }

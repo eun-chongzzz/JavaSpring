@@ -3,9 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	
 	<!-- context 네임스페이스 태그를 이용해 평문을 그대로 적지 않고
@@ -41,5 +45,19 @@
 	<!-- com.ict.service에 대해 컴포넌트 스캔을 해 주세요 -->
 	<context:component-scan base-package="com.ict.service" />
 	
+	<!-- 트랜잭션 실행을 위한 transactionManager 객체 생성, 
+		annotation-driven 태그 작성, 쿼리문 입력할 마이바티스 매퍼 스캔 -->
+		<bean id="transactionManager"
+		 	class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		 	<property name="dataSource" ref="dataSource"></property>	
+		</bean>
+	
+	 <!-- 어노테이션을 거는것만으로 트랜잭션 작동하도록 도와줌 -->
+		 <tx:annotation-driven/>
+		 
+		 <context:annotation-config></context:annotation-config>
+		 
+		 	<!-- @Aspect를 받은 클래스는 AOP의 타겟임을 알림 -->
+		<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 	
 </beans>

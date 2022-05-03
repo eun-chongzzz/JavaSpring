@@ -18,5 +18,8 @@ public interface ReplyMapper {
 	public void delete(Long rno);
 	
 	// rno만으로 bno를 유추해야하기 때문에 getBno선언
-	public int getBno(long rno);
+	public Long getBno(Long rno);
+	
+	// bno번글에 달린 댓글을 다 삭제하는 쿼리문 생성
+	public void replyAllDelete(Long bno);
 }

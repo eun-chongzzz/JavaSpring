@@ -91,8 +91,8 @@
 			<ul id="replies">
 				<!-- 비어있는 ul -->
 			</ul>
-		</div>
-	</div>	<!-- container -->
+		</div>	<!-- container -->
+	
 	
 		<!-- modal은 일종의 팝업입니다. 
 		단, 새 창을 띄우지는 않고 css를 이용해 특정 태그가 조건부로 보이거나 안 보이도록 처리해서

@@ -25,4 +25,5 @@ public interface BoardService {
 	
 	// 글 수정 로직
 	public void update(BoardVO vo);
+	
 }

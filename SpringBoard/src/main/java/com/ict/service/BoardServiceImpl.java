@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ict.domain.BoardVO;
 import com.ict.domain.SearchCriteria;
 import com.ict.mapper.BoardMapper;
+import com.ict.mapper.ReplyMapper;
 
 // BoardService 인터페이스 구현
 @Service // 빈 컨테이너에 등록(root-context.xml에서 컴포넌트 스캔까지 완료해야 등록됨)
@@ -22,6 +24,9 @@ public class BoardServiceImpl implements BoardService{
 	// 참고) BoardMapperTests.java
 	@Autowired
 	private BoardMapper boardMapper;
+	
+	@Autowired
+	private ReplyMapper replyMapper;
 
 	// 리턴자료형이 없는 insert, delete, update 구문은 사용자 행동 기준으로 메서드를 나눕니다.
 	// 리턴자료형이 있는 select 구문은 하나의 메서드가 하나의 쿼리문을 담당합니다.
@@ -44,9 +49,13 @@ public class BoardServiceImpl implements BoardService{
 	public void insert(BoardVO vo) {
 		boardMapper.insert(vo);
 	}
-
+	
+	@Transactional
 	@Override
 	public void delete(long bno) {
+		// 댓글먼저 삭제 후
+		replyMapper.replyAllDelete(bno);
+		// 글 마저 삭제(댓글이 없는 글만 삭제가 가능하므로 위의 순서대로 작성)
 		boardMapper.delete(bno);
 	}
 
