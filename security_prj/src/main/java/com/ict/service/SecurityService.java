@@ -1,5 +1,8 @@
 package com.ict.service;
 
-public interface SecurityService {
+import com.ict.domain.MemberVO;
 
+public interface SecurityService {
+	
+	public void insertMemberTbl(MemberVO vo);
 }

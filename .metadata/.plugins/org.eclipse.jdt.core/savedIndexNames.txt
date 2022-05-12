@@ -1,5 +1,4 @@
 INDEX VERSION 1.131+C:\eclipse\spring_1\.metadata\.plugins\org.eclipse.jdt.core
-445696548.index
 4027168008.index
 3504878160.index
 2137471294.index
@@ -9,7 +8,6 @@ INDEX VERSION 1.131+C:\eclipse\spring_1\.metadata\.plugins\org.eclipse.jdt.core
 2750577219.index
 3012088441.index
 4218607933.index
-127266156.index
 2138819541.index
 1340271829.index
 4190036786.index
@@ -46,13 +44,10 @@ INDEX VERSION 1.131+C:\eclipse\spring_1\.metadata\.plugins\org.eclipse.jdt.core
 1284320530.index
 814981309.index
 52171741.index
-236899576.index
 287537481.index
 1784118884.index
 2035437772.index
 652811791.index
-2934840087.index
-718861131.index
 497162892.index
 2895113179.index
 1920578113.index
