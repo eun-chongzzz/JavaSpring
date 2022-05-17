@@ -3,6 +3,7 @@ package com.ict.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.http.HttpHeaders;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -57,16 +59,27 @@ public class UploadController {
 		log.info("upload form");
 	}
 	
+	
+	
+	//■■■■■ Form ■■■■■//
 	@PostMapping(value="/uploadFormAction",
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ResponseBody
+	@ResponseBody // .jsp대신 json데이터를 리턴하게 하고 싶다면 @ResponseBody를 사용
 	public ResponseEntity<List<AttachFileDTO>> uploadFormPost(MultipartFile[] uploadFile) {
 		
+		// 그림파일의 정보 AttachFileDTO를 업로드된 파일 개수만큼 중첩해 저장
+		// AttachFileDTO는 파일 한 개의 정보를 저장합니다.
+		// 현재 파일 업로드는 여러 파일을 동시에 업로드하므로 List<AttachFileDTO>를 받도록 처리합니다.
 		List<AttachFileDTO> list = new ArrayList<>();
-		String uploadFolder = "C:\\upload_data\\temp";
+		
+		// 저장경로
+		String uploadFolder = "C:\\upload_data\\temp"; 
+		
+		// 오늘 날짜 폴더와 파일 정보를 가져옴
+		String uploadFolderPath = getFolder(); 
 		
 		// 폴더 생성
-		File uploadPath = new File(uploadFolder, getFolder());
+		File uploadPath = new File(uploadFolder, uploadFolderPath);
 		log.info("upload Path: " + uploadPath);
 		
 		if(uploadPath.exists() == false) {
@@ -74,11 +87,21 @@ public class UploadController {
 		}
 
 		for(MultipartFile multipartFile : uploadFile) {
-			log.info("----------------");
+		/*	log.info("----------------");
 			log.info("Upload File Name : " + multipartFile.getOriginalFilename());
-			log.info("---------------- : " + multipartFile.getSize());
+			log.info("---------------- : " + multipartFile.getSize()); */
+			
+			// 파일정보를 저장할 DTO 생성
+			AttachFileDTO attachDTO = new AttachFileDTO();
 			
 			String uploadFileName = multipartFile.getOriginalFilename();
+			
+			uploadFileName = uploadFileName.substring(uploadFileName.indexOf("\\") + 1);
+			
+			log.info("only file name : " + uploadFileName);
+			
+			// 상단에 만든 DTO에 파일이름 저장
+			attachDTO.setFileName(uploadFileName);
 			
 			// uuid 발급 부분
 			UUID uuid = UUID.randomUUID();
@@ -91,35 +114,60 @@ public class UploadController {
 			try {
 				File saveFile = new File(uploadPath, uploadFileName);
 				multipartFile.transferTo(saveFile);
+				
+				// uuid와 저장할 폴더 경로를 setter로 입력받기
+				attachDTO.setUuid(uuid.toString());
+				attachDTO.setUploadPath(uploadFolderPath);				
+				
+				// 이 아래부터 썸네일 생성로직
 				if(checkImageType(saveFile)) {
+					
+					attachDTO.setImage(true);
+					
 					FileOutputStream thumbnail = 
 							new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
 			
 					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
+					
 					thumbnail.close();
 				}
-				
+				// ArrayList에 개별 DTO를 집어넣어줘야 출력됨
+				list.add(attachDTO);
 			}catch(Exception e) {
 				log.error(e.getMessage());
 			}
 			
 		}//end for
+		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 	
-	/////////Ajax/////////
+	
+	
+	
+	
+	//■■■■■ Ajax ■■■■■//
 	@GetMapping("uploadAjax")
 	public void uploadAjax() {
 		
 		log.info("upload ajax");
 	}
 	
-	@PostMapping("/uploadAjaxAction")
-	public void uploadAjaxPost(MultipartFile[] uploadFile) {
+	
+	
+	@PostMapping(value="/uploadAjaxAction",
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody // .jsp대신 json데이터를 리턴하게 하고 싶다면 @ResponseBody를 사용
+	public ResponseEntity<List<AttachFileDTO>> uploadAjaxPost(MultipartFile[] uploadFile) {
 		
-		log.info("ajax post update!");
+		// log.info("ajax post update!");
+		
+		List<AttachFileDTO> list = new ArrayList<>();
 		
 		// 어떤 폴더에 저장할것인지 위치지정
 		String uploadFolder = "C:\\upload_data\\temp";
+		
+		// 오늘 날짜 폴더와 파일 정보를 가져옴
+		String uploadFolderPath = getFolder(); 
 		
 		// 폴더 생성
 		File uploadPath = new File(uploadFolder, getFolder());
@@ -134,13 +182,19 @@ public class UploadController {
 			log.info("----------------");
 			log.info("Upload File Name : " + multipartFile.getOriginalFilename());
 			log.info("Upload file size : " + multipartFile.getSize());
-		
+			
+			// 개별 파일에 대한 DTO생성
+			AttachFileDTO attachDTO = new AttachFileDTO();
+			
 			String uploadFileName = multipartFile.getOriginalFilename();
 			
 			// 파일 경로가 이상하게 들어오는것을 대비해서 넣어 놓은 로직
 			uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("\\") + 1);
 			
 			log.info("last file name : " + uploadFileName);
+			
+			// uploadFileName에 의해 파일이름을 얻어왔으면 파일명을 attachDTO에 집어넣음
+			attachDTO.setFileName(uploadFileName);
 			
 			//uuid 발급 부분
 			UUID uuid = UUID.randomUUID();
@@ -154,19 +208,52 @@ public class UploadController {
 				File saveFile = new File(uploadPath, uploadFileName);
 				multipartFile.transferTo(saveFile);
 				
+				// uuid와 저장할 폴더 경로를 setter로 입력받기
+				attachDTO.setUuid(uuid.toString());
+				attachDTO.setUploadPath(uploadFolderPath);	
+				
 				// 이 아래부터 썸네일 생성로직
 				if(checkImageType(saveFile)) {
+					
+					attachDTO.setImage(true);
+					
 					FileOutputStream thumbnail = 
 							new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
 			
 					Thumbnailator.createThumbnail(multipartFile.getInputStream(), thumbnail, 100, 100);
 					thumbnail.close();
 				}
+				// ArrayList에 개별 DTO를 집어넣어줘야 출력됨
+				list.add(attachDTO);
 			}catch(Exception e) {
 				log.error(e.getMessage());
 			}
 		}// end for
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	
+	//■■■■■ Thumbnail ■■■■■//
+	@GetMapping("/display")
+	@ResponseBody
+	public ResponseEntity<byte[]> getFile(String fileName){
 		
+		log.info("fileName: " + fileName);
+		
+		File file = new File("c:\\upload_data\\temp\\" + fileName);
+		
+		log.info("file: " + file);
+		
+		ResponseEntity<byte[]> result = null;
+		
+		try {
+			
+			
+			
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	
