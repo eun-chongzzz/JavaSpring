@@ -1,6 +1,7 @@
 package com.ict.domain;
 
 import java.sql.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -16,5 +17,8 @@ public class BoardVO {
 	private Date regdate;
 	private Date updatedate;
 	private int replyCount; // 댓글 표출 시 추가한 컬럼 
+	
+	// 이미지 정보는 글 하나에 여럿일수도 있으므로 List로 선언
+	private List<BoardAttachVO>  attachList;
 	
 }
