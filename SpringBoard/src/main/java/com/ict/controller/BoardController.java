@@ -3,14 +3,19 @@ package com.ict.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ict.domain.BoardAttachVO;
 import com.ict.domain.BoardVO;
 import com.ict.domain.PageMaker;
 import com.ict.domain.SearchCriteria;
@@ -79,7 +84,15 @@ public class BoardController {
 	// boardList로 돌려보내주세요.
 	@PostMapping(value="/boardInsert")
 	public String boardInsert(BoardVO boardVO) {
+		
+		// 첨부파일 들어오는지 여부 디버깅
+		log.info("==================");
+		log.info("들어온데이터 디버깅 : " + boardVO);
+		if(boardVO.getAttachList() != null) {
+			boardVO.getAttachList().forEach(attach -> log.info(attach));
+		}
 		service.insert(boardVO);
+		
 		return "redirect:/board/boardList";
 	}
 	
@@ -144,6 +157,14 @@ public class BoardController {
 		model.addAttribute("bno",bno);
 		return "redirect:/boardDetail/{bno}";
 	} */
+	
+	
+	
+	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<BoardAttachVO>> getAttachList(Long bno){
 		
+		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
+	}
 	
  }

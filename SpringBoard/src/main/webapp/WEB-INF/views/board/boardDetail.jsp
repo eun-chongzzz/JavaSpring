@@ -22,6 +22,27 @@
 		 	padding : 10px;
 		 	z-index : 1000; /*무조건 1보다 클것*/
 		}
+	
+	/* uploadResult 결과물 css*/
+	#uploadResult {
+		width: 100%;
+	}
+	#uploadResult ul{
+		display: flex;
+		flex-flow: row;
+		justify-content: center;
+		align-items: center;
+	}
+	#uploadResult ul li {
+		list-style : none;
+		padding 10px;
+	}
+	
+	#uploadResult ul li img{
+		width : 20px;
+	}
+
+
 	</style>
 	
 <title>Insert title here</title>
@@ -47,6 +68,16 @@
 			<div class="col-md-3">수정날짜 : </div>
 			<div class="col-md-3">${board.updatedate }</div>
 		</div>
+		
+		<div class="row">
+			<h3 class="text-primary">첨부파일</h3>
+			<div id="uploadResult">
+				<ul>
+					<!-- 첨부파일이 들어갈 위치 -->
+				</ul>
+			</div>
+		</div>
+		
 		<div class="row">
 			<div class="col-md-1">
 				<a href="/board/boardList?pageNum=${param.pageNum == null ? 1 : param.pageNum }&searchType=${param.searchType}&keyword=${param.keyword}" class="btn btn-info btn-sm">목록</a>
@@ -90,9 +121,10 @@
 			<!-- 댓글추가공간 -->
 			<ul id="replies">
 				<!-- 비어있는 ul -->
-			</ul>
+			</ul>	
 		</div>	<!-- container -->
-	
+		
+
 	
 		<!-- modal은 일종의 팝업입니다. 
 		단, 새 창을 띄우지는 않고 css를 이용해 특정 태그가 조건부로 보이거나 안 보이도록 처리해서
@@ -252,6 +284,57 @@
 				}
 			});
 		});
+		
+		
+		// 첨부파일
+		(function(){
+			
+			$.getJSON("/board/getAttachList", {bno: bno}, function(arr){
+				console.log(arr);
+				
+				var str = "";
+				
+				$(arr).each(function(i, attach){
+					
+					if(!attach.fileType){
+						
+						var fileCallPath = encodeURIComponent(attach.uploadPath + "/" +
+								attach.uuid + "_" + attach.fileName);
+						
+						str += "<li "
+							+ "data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid
+							+ "' data-filename='" + attach.fileName + "' data-type='" + attach.fileType
+							+ "'><a href='/download?fileName=" + fileCallPath
+							+ "'>" + "<img src='/resources/attach.png'>"
+							+ attach.fileName + "</a>"
+							+ "<span data-file=\'" + fileCallPath + "\' data-type='file'> X </span>"
+							+ "</li>";
+						
+					} else {
+						
+						// 수정코드
+						// 썸네일
+						var fileCallPath = encodeURIComponent(attach.uploadPath + 
+														"/s_" + attach.uuid + "_" + attach.fileName);
+						
+						// 원본
+						var fileCallPathOriginal = encodeURIComponent(attach.uploadPath +
+														"/" + attach.uuid + "_" + attach.fileName);
+						
+						str += "<li "
+							+ "data-path='" + attach.uploadPath + "' data-uuid='" + attach.uuid
+							+ "' data-filename='" + attach.fileName + "' data-type='" + attach.fileType
+							+ "'><a href='/download?fileName=" + fileCallPathOriginal
+							+ "'>" + "<img src='/display?fileName="+ fileCallPath + "'>"
+							+ attach.fileName + "</a>"
+							+ "<span data-file=\'" + fileCallPath + "\' data-type='image'> X </span>"
+							+ "</li>";
+					}
+					
+				});
+				$("#uploadResult ul").html(str);
+			});// end getJSON
+		})(); // end anonymous(익명함수) 
 	
 	</script>
 </body>

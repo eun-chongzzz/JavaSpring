@@ -36,6 +36,7 @@
 		<input type="text" name="title" placeholder="제목">
 		<input type="text" name="writer" placeholder="글쓴이"><br>
 		<textarea rows="20" cols="50" name="content">내용</textarea><br>
+		<input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"/>
 		<input id="submitBtn" type="submit" value="작성"><input type="reset" value="초기화">
 	</form>
 	
@@ -203,7 +204,7 @@
 				}); // ajax
 			}); // click span
 			
-			// 제출버튼 누를 경우, 첨부파일 정보를 폼에 추가해서 전달하는 코드
+			// 글쓰기버튼 누를 경우, 첨부파일 정보를 폼에 추가해서 전달하는 코드
 			$("#submitBtn").on("click", function(e){
 				// 1. 제출버튼을 눌렀을때 바로 작동하지않도록 기능막기
 				e.preventDefault();
@@ -211,11 +212,25 @@
 				// 2. var formObj = $("form"); 로 폼태그 가져오기
 				var formObj = $("form");
 				
+				var str = "";
 				// 3. 5월  19일 수업에서는 첨부파일 내에 들어있던 이미지 정보를 콘솔에 찍기만하고 종료하고
 				// 내일 수업에 DB에 넣는부분까지 진행합니다.
 				$(".uploadResult ul li").each(function(i, obj){
-					console.log($(obj));
-				})
+					
+					var jobj = $(obj);
+					console.log(jobj);
+					
+					str += "<input type='hidden' name='attachList[" + i + "].fileName'"
+					+ " value='" + jobj.data("filename") + "'>"
+					+ "<input type='hidden' name='attachList[" + i + "].uuid'"
+					+ " value='" + jobj.data("uuid") + "'>"
+					+ "<input type='hidden' name='attachList[" + i + "].uploadPath'"
+					+ " value='" + jobj.data("path") + "'>"
+					+ "<input type='hidden' name='attachList[" + i + "].fileType'"
+					+ " value='" + jobj.data("type") + "'>";
+				});
+				// 폼태그에 위의 str내부 태그를 추가해주는 명령어, .submit() 을 추가로 넣으면 제출 완료
+				formObj.append(str).submit();
 				
 			});
 			

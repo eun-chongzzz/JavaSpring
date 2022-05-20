@@ -6,7 +6,7 @@
 		
 		<insert id="insert">
 			INSERT INTO ictimage (uuid, uploadpath, filename, filetype, bno)
-				VALUES (#{uuid}, #{uploadpath}, #{filename}, #{filetype}, #{bno})
+				VALUES (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{bno})
 		</insert>
 		
 		<delete id="delete">
