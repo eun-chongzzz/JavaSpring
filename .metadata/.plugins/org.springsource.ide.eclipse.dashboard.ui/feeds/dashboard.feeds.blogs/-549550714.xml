@@ -41,7 +41,7 @@
 &lt;p&gt;The highlights of the 2.7 release include:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;Auto-configuration and metrics for Spring for GraphQL; see related 1.0 &lt;a href="https://spring.io/blog/2022/05/19/spring-for-graphql-1-0-release"&gt;release announcement&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;New &lt;code&gt;@DataCoubaseTest&lt;/code&gt; and &lt;code&gt;@DataElasticsearchTest&lt;/code&gt; support&lt;/li&gt;
+  &lt;li&gt;New &lt;code&gt;@DataCouchbaseTest&lt;/code&gt; and &lt;code&gt;@DataElasticsearchTest&lt;/code&gt; support&lt;/li&gt;
   &lt;li&gt;Podman can now be used when building images using Cloud Native Buildpacks&lt;/li&gt;
   &lt;li&gt;Support for Cache2k&lt;/li&gt;
   &lt;li&gt;Simplified registration of Jackson Mixins&lt;/li&gt;
